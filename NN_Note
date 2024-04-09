@@ -3,7 +3,7 @@
 輸入層顧名思義就是輸入資料(Data)的特徵值 (Features)，舉個例來說，今天要預測一個人是男生還是女生，我們有的資料可能是這個人的身高、體重、髮長，而身高、體重、髮長就是你要放入輸入層的特徵值。
 
 隱藏層說穿了就是在做運算，由神經元(Neuron)組成，透過前向傳播(Forward propagation) 計算出我們的Output值。
-激活函數:
+激活函數Activation Rule:
 每個神經元都有一個激活函數，由這層神經元輸出給下層神經元的輸入，中間就會有個函數關係，將之做非線性轉換。
 https://ithelp.ithome.com.tw/articles/10276865
 https://cvfiasd.pixnet.net/blog/post/275774124-%E6%B7%B1%E5%BA%A6%E5%AD%B8%E7%BF%92%E6%BF%80%E5%8B%B5%E5%87%BD%E6%95%B8%E4%BB%8B%E7%B4%B9
