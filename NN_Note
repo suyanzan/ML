@@ -11,3 +11,6 @@ https://cvfiasd.pixnet.net/blog/post/275774124-%E6%B7%B1%E5%BA%A6%E5%AD%B8%E7%BF
 https://zh.wikipedia.org/zh-tw/%E9%93%BE%E5%BC%8F%E6%B3%95%E5%88%99
 BackPropagation:
 反向傳播（英語：Backpropagation，意為誤差反向傳播，縮寫為BP）是對多層類神經網路進行梯度下降的演算法，也就是用鏈式法則以網路每層的權重為變數計算損失函式的梯度，以更新權重來最小化損失函式。
+
+梯度下降法（英語：Gradient descent）是一個一階最佳化算法，通常也稱為最陡下降法，但是不該與近似積分的最陡下降法（英語：Method of steepest descent）混淆。 
+要使用梯度下降法找到一個函數的局部極小值，必須向函數上當前點對應梯度（或者是近似梯度）的反方向的規定步長距離點進行疊代搜索。如果相反地向梯度正方向疊代進行搜索，則會接近函數的局部極大值點；這個過程則被稱為梯度上升法。
