@@ -1,67 +1,195 @@
 using System;
-using Accord.Neuro;
-using Accord.Neuro.Learning;
+using System.Linq;
 
-namespace NeuralNetworkExample
+public class NeuralNetwork
 {
-    class Program
+    private int inputSize;
+    private int hiddenSize;
+    private int outputSize;
+    private double[,] weightsInputHidden;
+    private double[,] weightsHiddenOutput;
+    private Random random;
+
+    public NeuralNetwork(int inputSize, int hiddenSize, int outputSize)
     {
-        static void Main(string[] args)
+        this.inputSize = inputSize;
+        this.hiddenSize = hiddenSize;
+        this.outputSize = outputSize;
+        weightsInputHidden = new double[inputSize, hiddenSize];
+        weightsHiddenOutput = new double[hiddenSize, outputSize];
+        random = new Random();
+
+        InitializeWeights();
+    }
+
+    private void InitializeWeights()
+    {
+        for (int i = 0; i < inputSize; i++)
         {
-            // Input data for AND gate
-            double[][] input =
+            for (int j = 0; j < hiddenSize; j++)
             {
-                new double[] {0, 0},
-                new double[] {0, 1},
-                new double[] {1, 0},
-                new double[] {1, 1}
-            };
-
-            // Expected output for AND gate
-            double[][] output =
-            {
-                new double[] {0},
-                new double[] {0},
-                new double[] {0},
-                new double[] {1}
-            };
-
-            // Create a neural network with 2 input neurons, 2 hidden neurons, and 1 output neuron
-            ActivationNetwork network = new ActivationNetwork(
-                new SigmoidFunction(), // Sigmoid activation function
-                2,                    // Number of inputs
-                2,                    // Number of hidden neurons
-                1                     // Number of outputs
-            );
-
-            // Initialize random weights
-            new NguyenWidrow(network).Randomize();
-
-            // Create a BackPropagation learning algorithm
-            BackPropagationLearning teacher = new BackPropagationLearning(network);
-
-            // Set learning rate and momentum
-            teacher.LearningRate = 0.1;
-            teacher.Momentum = 0.0;
-
-            // Train the network
-            double error;
-            int epoch = 0;
-            do
-            {
-                error = teacher.RunEpoch(input, output);
-                Console.WriteLine($"Epoch {epoch}, Error: {error}");
-                epoch++;
-            } while (error > 0.01 && epoch < 10000); // Train until error is sufficiently small or maximum epochs reached
-
-            // Test the trained network
-            for (int i = 0; i < input.Length; i++)
-            {
-                double[] predicted = network.Compute(input[i]);
-                Console.WriteLine($"Input: [{string.Join(", ", Array.ConvertAll(input[i], x => x.ToString()))}], Expected: [{output[i][0]}], Predicted: [{predicted[0]}]");
+                weightsInputHidden[i, j] = random.NextDouble() * 2 - 1; // Random weights between -1 and 1
             }
+        }
 
-            Console.ReadLine();
+        for (int i = 0; i < hiddenSize; i++)
+        {
+            for (int j = 0; j < outputSize; j++)
+            {
+                weightsHiddenOutput[i, j] = random.NextDouble() * 2 - 1; // Random weights between -1 and 1
+            }
+        }
+    }
+
+    private double ReLU(double x)
+    {
+        return Math.Max(0, x);
+    }
+
+    private double[] Softmax(double[] x)
+    {
+        double max = x.Max();
+        double[] exps = x.Select(val => Math.Exp(val - max)).ToArray();
+        double expsSum = exps.Sum();
+        return exps.Select(val => val / expsSum).ToArray();
+    }
+
+    public double[] FeedForward(double[] inputs)
+    {
+        double[] hiddenLayerValues = new double[hiddenSize];
+        double[] outputLayerValues = new double[outputSize];
+
+        // Calculate values for hidden layer
+        for (int i = 0; i < hiddenSize; i++)
+        {
+            double sum = 0;
+            for (int j = 0; j < inputSize; j++)
+            {
+                sum += inputs[j] * weightsInputHidden[j, i];
+            }
+            hiddenLayerValues[i] = ReLU(sum);
+        }
+
+        // Calculate values for output layer
+        for (int i = 0; i < outputSize; i++)
+        {
+            double sum = 0;
+            for (int j = 0; j < hiddenSize; j++)
+            {
+                sum += hiddenLayerValues[j] * weightsHiddenOutput[j, i];
+            }
+            outputLayerValues[i] = sum;
+        }
+
+        return Softmax(outputLayerValues);
+    }
+
+    public void Train(double[] inputs, double[] targets, double learningRate)
+    {
+        // Feedforward
+        double[] hiddenLayerValues = new double[hiddenSize];
+        double[] outputLayerValues = new double[outputSize];
+
+        // Calculate values for hidden layer
+        for (int i = 0; i < hiddenSize; i++)
+        {
+            double sum = 0;
+            for (int j = 0; j < inputSize; j++)
+            {
+                sum += inputs[j] * weightsInputHidden[j, i];
+            }
+            hiddenLayerValues[i] = ReLU(sum);
+        }
+
+        // Calculate values for output layer
+        for (int i = 0; i < outputSize; i++)
+        {
+            double sum = 0;
+            for (int j = 0; j < hiddenSize; j++)
+            {
+                sum += hiddenLayerValues[j] * weightsHiddenOutput[j, i];
+            }
+            outputLayerValues[i] = sum;
+        }
+
+        // Softmax activation for output layer
+        outputLayerValues = Softmax(outputLayerValues);
+
+        // Backpropagation
+        double[] outputErrors = new double[outputSize];
+        for (int i = 0; i < outputSize; i++)
+        {
+            outputErrors[i] = targets[i] - outputLayerValues[i];
+        }
+
+        double[] hiddenErrors = new double[hiddenSize];
+        for (int i = 0; i < hiddenSize; i++)
+        {
+            double error = 0;
+            for (int j = 0; j < outputSize; j++)
+            {
+                error += outputErrors[j] * weightsHiddenOutput[i, j];
+            }
+            hiddenErrors[i] = error;
+        }
+
+        // Update weights using gradient descent
+        for (int i = 0; i < inputSize; i++)
+        {
+            for (int j = 0; j < hiddenSize; j++)
+            {
+                weightsInputHidden[i, j] += learningRate * inputs[i] * (hiddenErrors[j] > 0 ? 1 : 0) * hiddenErrors[j];
+            }
+        }
+
+        for (int i = 0; i < hiddenSize; i++)
+        {
+            for (int j = 0; j < outputSize; j++)
+            {
+                weightsHiddenOutput[i, j] += learningRate * hiddenLayerValues[i] * outputErrors[j];
+            }
+        }
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Sample usage of the neural network
+        NeuralNetwork neuralNetwork = new NeuralNetwork(2, 3, 2);
+
+        // Training data
+        double[][] inputs = {
+            new double[]{0, 0},
+            new double[]{0, 1},
+            new double[]{1, 0},
+            new double[]{1, 1}
+        };
+
+        double[][] targets = {
+            new double[]{1, 0},
+            new double[]{0, 1},
+            new double[]{0, 1},
+            new double[]{1, 0}
+        };
+
+        // Training the network
+        double learningRate = 0.1;
+        int epochs = 10000;
+        for (int epoch = 0; epoch < epochs; epoch++)
+        {
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                neuralNetwork.Train(inputs[i], targets[i], learningRate);
+            }
+        }
+
+        // Test the trained network
+        foreach (var input in inputs)
+        {
+            double[] output = neuralNetwork.FeedForward(input);
+            Console.WriteLine($"Input: [{input[0]}, {input[1]}], Output: [{output[0]}, {output[1]}]");
         }
     }
 }
