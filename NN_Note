@@ -7,3 +7,7 @@
 每個神經元都有一個激活函數，由這層神經元輸出給下層神經元的輸入，中間就會有個函數關係，將之做非線性轉換。
 https://ithelp.ithome.com.tw/articles/10276865
 https://cvfiasd.pixnet.net/blog/post/275774124-%E6%B7%B1%E5%BA%A6%E5%AD%B8%E7%BF%92%E6%BF%80%E5%8B%B5%E5%87%BD%E6%95%B8%E4%BB%8B%E7%B4%B9
+鏈鎖率（Chain rule）:
+https://zh.wikipedia.org/zh-tw/%E9%93%BE%E5%BC%8F%E6%B3%95%E5%88%99
+BackPropagation:
+反向傳播（英語：Backpropagation，意為誤差反向傳播，縮寫為BP）是對多層類神經網路進行梯度下降的演算法，也就是用鏈式法則以網路每層的權重為變數計算損失函式的梯度，以更新權重來最小化損失函式。
