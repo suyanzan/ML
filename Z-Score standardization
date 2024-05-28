@@ -1,0 +1,31 @@
+Min-max normalization is one of the most common ways to normalize data. 
+Z值標準化 (Z-Score Standardization)
+using System;
+using System.Linq;
+
+public class ZScoreStandardization
+{
+    public static double[] Standardize(double[] data)
+    {
+        double mean = data.Average();
+        double stdDev = Math.Sqrt(data.Select(val => (val - mean) * (val - mean)).Average());
+        
+        return data.Select(val => (val - mean) / stdDev).ToArray();
+    }
+
+    public static void Main(string[] args)
+    {
+        double[] x1 = { /* Your x1 data here, example: 1, 2, 3, ..., 10000 */ };
+        double[] x2 = { /* Your x2 data here, example: 1, 2, 3, ..., 10 */ };
+
+        double[] x1Standardized = Standardize(x1);
+        double[] x2Standardized = Standardize(x2);
+
+        Console.WriteLine("Standardized x1:");
+        Console.WriteLine(string.Join(", ", x1Standardized));
+
+        Console.WriteLine("Standardized x2:");
+        Console.WriteLine(string.Join(", ", x2Standardized));
+    }
+}
+
