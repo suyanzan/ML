@@ -1,0 +1,50 @@
+[姓名]
+[電話號碼] | [電子郵件] | [LinkedIn/個人網站/GitHub]
+
+簡介
+具備X年AI和機器學習經驗的工程師，熟悉C#和ML.NET。擅長設計和部署機器學習模型，並有豐富的數據處理和分析經驗。尋求AI工程師職位，希望能利用現有技術專長為公司創造價值。
+
+技能
+- 編程語言：C#、Python、JavaScript
+- 機器學習：ML.NET、TensorFlow、scikit-learn
+- 數據分析：Pandas、NumPy
+- 工具和平台：Azure Machine Learning、Azure Cognitive Services、SQL、Git
+- 自然語言處理：NLTK、spaCy
+- 電腦視覺：OpenCV、Azure Computer Vision API
+
+工作經歷
+AI 工程師
+XYZ 公司，2020年6月 - 至今
+- 使用 ML.NET 開發和部署多個機器學習模型，成功提升產品推薦系統的精準度。
+- 與數據科學團隊合作，設計和實施數據處理管道，提升數據分析效率。
+- 利用 Azure Cognitive Services 開發 NLP 應用，提高客戶服務系統的自動化程度。
+
+軟件開發工程師
+ABC 公司，2017年5月 - 2020年5月
+- 使用 C# 和 .NET 框架開發企業級應用程序，並與數據科學團隊協作實現數據驅動功能。
+- 優化數據存儲和檢索系統，顯著提高應用性能和可靠性。
+- 領導一個小型團隊，完成了多個關鍵項目的開發和部署。
+
+教育背景
+碩士學位，計算機科學
+台灣大學，2015年9月 - 2017年6月
+
+學士學位，計算機科學
+台灣大學，2011年9月 - 2015年6月
+
+專案經驗
+客戶流失預測模型
+- 使用 ML.NET 開發了一個預測客戶流失的模型，準確率達到85%。
+- 分析數據集，進行特徵工程，並訓練和評估多個模型以選擇最佳方案。
+
+智能客服系統
+- 利用 Azure Cognitive Services 開發了一個基於 NLP 的智能客服系統，顯著提升了客戶服務效率。
+- 負責系統設計、模型訓練和測試，以及最終的部署和性能優化。
+
+證書和認證
+- Microsoft Certified: Azure AI Engineer Associate
+- Machine Learning by Stanford University (Coursera)
+
+其他
+- 語言：中文（母語）、英文（流利）
+- 獎項：XYZ 公司年度最佳員工，2019年
