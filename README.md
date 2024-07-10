@@ -33,23 +33,25 @@ To express the optimization objective mathematically, we need to normalize both 
    \]
    - This function \( Z \) should be maximized.
 
-## Example Calculation
 
-For example, if `y1 = 0.5` and `y2 = 10`:
 
-1. Normalized \( y1 \):
+### Example Calculation
+
+Assume we have \( y1 = 0.5 \) and \( y2 = 5 \):
+
+1. Normalize \( y1 \):
    \[
-   y1_{norm} = \frac{0.5 - 0.1}{1 - 0.1} = \frac{0.4}{0.9} \approx 0.444
+   y1_{\text{norm}} = \frac{0.5 - 0.1}{1.0 - 0.1} = \frac{0.4}{0.9} \approx 0.444
    \]
 
-2. Normalized \( y2 \):
+2. Normalize \( y2 \):
    \[
-   y2_{norm} = \frac{15 - 10}{15 - 1} = \frac{5}{14} \approx 0.357
+   y2_{\text{norm}} = \frac{15 - 5}{15 - 1} = \frac{10}{14} \approx 0.714
    \]
 
-3. Overall objective \( Z \):
+3. Calculate the combined score:
    \[
-   Z = 0.5 \times 0.444 + 0.5 \times 0.357 \approx 0.400
+   \text{score} = 0.5 \times 0.444 + 0.5 \times 0.714 = 0.579
    \]
 
 By following this approach, we can evaluate and optimize the given variables to achieve the best possible outcome.
