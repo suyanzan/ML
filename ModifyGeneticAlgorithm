@@ -5,7 +5,7 @@ public class GeneticAlgorithm
 {
     static void Main(string[] args)
     {
-        run(new SqrtChromosome(), 100, 100);
+        run(new SqrtChromosome(), 100, 10);
     }
 
     public static void run(Chromosome prototype, int size, int maxGen)
@@ -112,13 +112,48 @@ public class SqrtChromosome : Chromosome
     public override Chromosome crossover(Chromosome spouse)
     {
         SqrtChromosome ss = spouse as SqrtChromosome;
-        int cutIdx = random.Next(32); // 選擇隨機位置進行 crossover
-        int mask = (1 << cutIdx) - 1;
-        int head = value & mask;
-        int tail = ss.value & ~mask;
+        
+        string parent1Str = ConvertToBase11(value);
+        string parent2Str = ConvertToBase11(ss.value);
+
+        int cutIdx = random.Next(11); // 隨機選擇切割位置
+        string head = parent1Str.Substring(0, cutIdx);
+        string tail = parent2Str.Substring(cutIdx);
+
+        string childStr = head + tail;
+        int childValue = ConvertFromBase11(childStr);
+
+        // 確保 childValue 是 11 的倍數
+        while (childValue % 11 != 0)
+        {
+            childValue++;
+        }
+
         SqrtChromosome child = new SqrtChromosome();
-        child.value = head | tail;
+        child.value = childValue;
         return child;
+    }
+
+    private string ConvertToBase11(int value)
+    {
+        string result = "";
+        while (value > 0)
+        {
+            int digit = value % 11;
+            result = digit.ToString() + result;
+            value /= 11;
+        }
+        return result.PadLeft(11, '0'); // 保持11位數，不足的補0
+    }
+
+    private int ConvertFromBase11(string base11Value)
+    {
+        int result = 0;
+        foreach (char digit in base11Value)
+        {
+            result = result * 11 + (digit - '0');
+        }
+        return result;
     }
 
     public override void mutate()
@@ -144,5 +179,3 @@ public class SqrtChromosome : Chromosome
         return String.Format("chromosome={0} fitness={1}", value, fitness);
     }
 }
-
-
