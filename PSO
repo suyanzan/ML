@@ -1,0 +1,138 @@
+using System;
+using System.Collections.Generic;
+
+class Particle
+{
+    public double[] Position { get; set; }
+    public double[] Velocity { get; set; }
+    public double[] BestPosition { get; set; }
+    public double BestFitness { get; set; }
+
+    public Particle(int dimension)
+    {
+        Position = new double[dimension];
+        Velocity = new double[dimension];
+        BestPosition = new double[dimension];
+        BestFitness = double.MaxValue;
+    }
+}
+
+class PSO
+{
+    private int _particleCount;
+    private int _dimension;
+    private int _iterations;
+    private double _c1;
+    private double _c2;
+    private double _w;
+    private double[] _globalBestPosition;
+    private double _globalBestFitness;
+    private List<Particle> _particles;
+    private Random _random = new Random();
+
+    public PSO(int particleCount, int dimension, int iterations, double c1, double c2, double w)
+    {
+        _particleCount = particleCount;
+        _dimension = dimension;
+        _iterations = iterations;
+        _c1 = c1;
+        _c2 = c2;
+        _w = w;
+        _particles = new List<Particle>();
+        _globalBestPosition = new double[_dimension];
+        _globalBestFitness = double.MaxValue;
+        InitializeParticles();
+    }
+
+    private void InitializeParticles()
+    {
+        for (int i = 0; i < _particleCount; i++)
+        {
+            var particle = new Particle(_dimension);
+            for (int j = 0; j < _dimension; j++)
+            {
+                particle.Position[j] = _random.NextDouble() * 10 - 5; // 初始化在[-5,5]范围内
+                particle.Velocity[j] = _random.NextDouble() * 2 - 1;  // 初始化速度在[-1,1]范围内
+            }
+            _particles.Add(particle);
+        }
+    }
+
+    private double ObjectiveFunction(double[] position)
+    {
+        // 示例目标函数: f(x) = x^2 的和 (求最小值)
+        double sum = 0.0;
+        foreach (var x in position)
+        {
+            sum += x * x;
+        }
+        return sum;
+    }
+
+    public void Optimize()
+    {
+        for (int iter = 0; iter < _iterations; iter++)
+        {
+            foreach (var particle in _particles)
+            {
+                double fitness = ObjectiveFunction(particle.Position);
+
+                // 更新粒子的最佳位置
+                if (fitness < particle.BestFitness)
+                {
+                    particle.BestFitness = fitness;
+                    Array.Copy(particle.Position, particle.BestPosition, _dimension);
+                }
+
+                // 更新全局最佳位置
+                if (fitness < _globalBestFitness)
+                {
+                    _globalBestFitness = fitness;
+                    Array.Copy(particle.Position, _globalBestPosition, _dimension);
+                }
+            }
+
+            // 更新速度和位置
+            foreach (var particle in _particles)
+            {
+                for (int j = 0; j < _dimension; j++)
+                {
+                    particle.Velocity[j] = _w * particle.Velocity[j] +
+                                           _c1 * _random.NextDouble() * (particle.BestPosition[j] - particle.Position[j]) +
+                                           _c2 * _random.NextDouble() * (_globalBestPosition[j] - particle.Position[j]);
+                    particle.Position[j] += particle.Velocity[j];
+                }
+            }
+
+            Console.WriteLine($"Iteration {iter + 1}: Best Fitness = {_globalBestFitness}");
+        }
+    }
+
+    public double[] GetBestPosition()
+    {
+        return _globalBestPosition;
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        int particleCount = 30;
+        int dimension = 2;
+        int iterations = 100;
+        double c1 = 1.5;
+        double c2 = 1.5;
+        double w = 0.7;
+
+        PSO pso = new PSO(particleCount, dimension, iterations, c1, c2, w);
+        pso.Optimize();
+
+        double[] bestPosition = pso.GetBestPosition();
+        Console.WriteLine("Best Position: ");
+        foreach (var pos in bestPosition)
+        {
+            Console.WriteLine(pos);
+        }
+    }
+}
