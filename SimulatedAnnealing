@@ -1,0 +1,62 @@
+using System;
+
+class SimulatedAnnealing
+{
+    static Random random = new Random();
+
+    // 定义目标函数：例如f(x) = x^2
+    static double ObjectiveFunction(double x)
+    {
+        return Math.Pow(x, 2);
+    }
+
+    // 生成新的解（通过在当前解的基础上稍作改变）
+    static double NewSolution(double currentSolution)
+    {
+        return currentSolution + (random.NextDouble() * 2 - 1);  // 在[-1, 1]范围内随机移动
+    }
+
+    // 模拟退火算法
+    static double SimulatedAnnealingOptimization(double initialSolution, double initialTemperature, double coolingRate)
+    {
+        double currentSolution = initialSolution;
+        double bestSolution = currentSolution;
+        double temperature = initialTemperature;
+
+        while (temperature > 1e-3)  // 当温度足够低时停止
+        {
+            double newSolution = NewSolution(currentSolution);
+            double currentEnergy = ObjectiveFunction(currentSolution);
+            double newEnergy = ObjectiveFunction(newSolution);
+
+            // 如果新解更优，或者以一定概率接受劣解
+            if (newEnergy < currentEnergy || Math.Exp((currentEnergy - newEnergy) / temperature) > random.NextDouble())
+            {
+                currentSolution = newSolution;
+            }
+
+            // 更新最优解
+            if (ObjectiveFunction(currentSolution) < ObjectiveFunction(bestSolution))
+            {
+                bestSolution = currentSolution;
+            }
+
+            // 降低温度
+            temperature *= coolingRate;
+        }
+
+        return bestSolution;
+    }
+
+    static void Main(string[] args)
+    {
+        double initialSolution = 10.0;
+        double initialTemperature = 10000.0;
+        double coolingRate = 0.99;
+
+        double optimalSolution = SimulatedAnnealingOptimization(initialSolution, initialTemperature, coolingRate);
+
+        Console.WriteLine($"Optimal solution found: {optimalSolution}");
+        Console.WriteLine($"Function value at optimal solution: {ObjectiveFunction(optimalSolution)}");
+    }
+}
