@@ -1,0 +1,44 @@
+//install pip install matplotlib numpy imageio
+
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
+import pandas as pd
+import matplotlib.animation as animation
+
+# Dataset
+data = {
+    'dataid': [1, 2, 3, 4],
+    'mtsl': [5291, 6200, 7000, 7500],
+    'usagerate': [0.9, 0.8, 0.7, 0.6],
+    'delays': [3.32, 3.20, 2.98, 3.50]
+}
+df = pd.DataFrame(data)
+
+# Create the 3D plot
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+# Plotting the points
+ax.scatter(df['mtsl'], df['usagerate'], df['delays'], color='black')
+
+# Highlight the gold-colored point
+gold_point = df[df['mtsl'] == 5291]
+ax.scatter(gold_point['mtsl'], gold_point['usagerate'], gold_point['delays'], color='gold', s=100)
+
+# Labels
+ax.set_xlabel('MTSL')
+ax.set_ylabel('AverageUsageRate')
+ax.set_zlabel('AverageDelayDays')
+
+# Function for rotating the view
+def rotate(i):
+    ax.view_init(elev=20, azim=i)
+
+# Create an animation
+ani = animation.FuncAnimation(fig, rotate, frames=np.arange(0, 360, 2), interval=100)
+
+# Save the animation as a GIF
+ani.save('C:\\Users\\User\\Desktop\\3d_scatter_rotation3.gif', writer='imagemagick', fps=400)
+
+plt.show()
