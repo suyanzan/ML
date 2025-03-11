@@ -59,6 +59,37 @@ if (existingRoute != null)
     }
 }
 
+
+using System.Web.Http;
+using System.Linq;
+using Swashbuckle.Application;
+
+namespace MyApi.App_Start
+{
+    public class SwaggerConfig
+    {
+        public static void Register()
+        {
+            var routes = GlobalConfiguration.Configuration.Routes;
+            var existingRoutes = routes
+                .Where(r => r.RouteTemplate == "swagger/docs/{apiVersion}")
+                .ToList();
+
+            foreach (var route in existingRoutes)
+            {
+                routes.Remove(route);
+            }
+
+            GlobalConfiguration.Configuration
+                .EnableSwagger(c =>
+                {
+                    c.SingleApiVersion("v1", "My API");
+                })
+                .EnableSwaggerUi();
+        }
+    }
+}
+
 在 Global.asax.cs 中，Application_Start 方法內加入：
 
 MyApi.App_Start.SwaggerConfig.Register();
