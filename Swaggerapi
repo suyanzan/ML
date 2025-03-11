@@ -43,6 +43,12 @@ namespace MyApi.App_Start
     {
         public static void Register()
         {
+var existingRoute = GlobalConfiguration.Configuration.Routes
+    .FirstOrDefault(r => r.RouteTemplate == "swagger/docs/{apiVersion}");
+if (existingRoute != null)
+{
+    GlobalConfiguration.Configuration.Routes.Remove(existingRoute);
+}
             GlobalConfiguration.Configuration
                 .EnableSwagger(c =>
                 {
