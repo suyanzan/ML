@@ -1,0 +1,107 @@
+Visual Studio 2015 本身沒有內建支援 OpenAPI（Swagger），但你可以使用 Swashbuckle 來為 ASP.NET Web API 生成 Swagger 文檔。以下是一個簡單的步驟與範例：
+
+
+---
+
+1. 安裝 Swashbuckle
+
+在 Visual Studio 2015 的 NuGet 套件管理員（Package Manager Console）中輸入：
+
+Install-Package Swashbuckle -Version 5.6.0
+
+> 注意：Swashbuckle 5.6.0 是適用於 .NET Framework 的最後一個版本。如果使用 .NET Core，應該升級到較新版本。
+
+
+
+
+---
+
+2. 建立 ASP.NET Web API 專案
+
+1. 開啟 Visual Studio 2015，建立 ASP.NET Web API 專案（.NET Framework）。
+
+
+2. 確保 Global.asax 或 Startup.cs 有正確的 Web API 設定。
+
+
+
+
+---
+
+3. 啟用 Swagger
+
+在 App_Start 目錄下建立 SwaggerConfig.cs，內容如下：
+
+using System.Web.Http;
+using Swashbuckle.Application;
+
+[assembly: System.Web.PreApplicationStartMethod(typeof(MyApi.App_Start.SwaggerConfig), "Register")]
+
+namespace MyApi.App_Start
+{
+    public class SwaggerConfig
+    {
+        public static void Register()
+        {
+            GlobalConfiguration.Configuration
+                .EnableSwagger(c =>
+                {
+                    c.SingleApiVersion("v1", "My API");
+                })
+                .EnableSwaggerUi();
+        }
+    }
+}
+
+在 Global.asax.cs 中，Application_Start 方法內加入：
+
+MyApi.App_Start.SwaggerConfig.Register();
+
+
+---
+
+4. 建立 Web API 控制器
+
+在 Controllers 目錄下建立一個 SampleController.cs：
+
+using System.Collections.Generic;
+using System.Web.Http;
+
+namespace MyApi.Controllers
+{
+    [RoutePrefix("api/sample")]
+    public class SampleController : ApiController
+    {
+        /// <summary>
+        /// 取得所有樣本資料
+        /// </summary>
+        /// <returns>字串列表</returns>
+        [HttpGet]
+        [Route("get-all")]
+        public IEnumerable<string> GetAll()
+        {
+            return new string[] { "value1", "value2" };
+        }
+    }
+}
+
+
+---
+
+5. 執行並測試 Swagger
+
+1. 執行 Web API 專案 (F5 或 Ctrl+F5)。
+
+
+2. 在瀏覽器中打開：http://localhost:port/swagger（port 為 Web API 運行的端口）。
+
+
+3. 你應該能看到 Swagger UI，並能測試 api/sample/get-all 這個 API。
+
+
+
+
+---
+
+這樣就完成了在 Visual Studio 2015 中使用 Swagger（OpenAPI） 來生成 Web API 文檔的基本範例！
+
