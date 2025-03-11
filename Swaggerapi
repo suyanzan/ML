@@ -90,6 +90,20 @@ namespace MyApi.App_Start
     }
 }
 
+var routes = GlobalConfiguration.Configuration.Routes;
+var existingRoutes = routes
+    .Select((r, index) => new { Route = r, Index = index })
+    .Where(r => r.Route.RouteTemplate == "swagger/docs/{apiVersion}")
+    .OrderByDescending(r => r.Index) // 逆序刪除，避免索引錯誤
+    .ToList();
+
+foreach (var item in existingRoutes)
+{
+    routes.RemoveAt(item.Index);
+}
+
+
+
 在 Global.asax.cs 中，Application_Start 方法內加入：
 
 MyApi.App_Start.SwaggerConfig.Register();
