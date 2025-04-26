@@ -4,7 +4,7 @@ info:
   version: 1.0.0
 servers:
   - url: https://680cca5c2ea307e081d50c1b.mockapi.io
-
+  - path: webapi路由 
 paths:
   /Scheduling/opc-capacity:
     get:
