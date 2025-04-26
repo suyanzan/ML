@@ -1,0 +1,112 @@
+openapi: 3.0.0
+info:
+  title: Scheduling API
+  version: 1.0.0
+servers:
+  - url: https://680cca5c2ea307e081d50c1b.mockapi.io
+
+paths:
+  /Scheduling/opc-capacity:
+    get:
+      summary: 取得 OPC 產能資料
+      responses:
+        '200':
+          description: 成功回傳 OPC 容量陣列
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpcCapacityList'
+
+  /Scheduling/reticle-orders:
+    get:
+      summary: 取得 Reticle 訂單清單
+      responses:
+        '200':
+          description: 成功回傳 Reticle 訂單陣列
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReticleOrderList'
+
+  /Scheduling/generate-schedule:
+    post:
+      summary: 依據訂單與產能計算排程並判斷是否延遲
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reticle_orders:
+                  $ref: '#/components/schemas/ReticleOrderList'
+                opc_capacity:
+                  $ref: '#/components/schemas/OpcCapacityList'
+      responses:
+        '200':
+          description: 排程後結果
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleResultList'
+
+components:
+  schemas:
+    ReticleOrderList:
+      type: array
+      items:
+        $ref: '#/components/schemas/ReticleOrder'
+    ReticleOrder:
+      type: object
+      properties:
+        id:
+          type: string
+        reticle_id:
+          type: string
+        order_date:
+          type: string
+          format: date
+        lot_size:
+          type: integer
+        due_date:
+          type: string
+          format: date
+
+    OpcCapacityList:
+      type: array
+      items:
+        $ref: '#/components/schemas/OpcCapacity'
+    OpcCapacity:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        total_opc_capacity:
+          type: integer
+        reserved_opc_capacity:
+          type: integer
+        available_opc_capacity:
+          type: integer
+
+    ScheduleResultList:
+      type: array
+      items:
+        $ref: '#/components/schemas/ScheduleResult'
+    ScheduleResult:
+      type: object
+      properties:
+        reticle_id:
+          type: string
+        due_date:
+          type: string
+          format: date
+        scheduled_date:
+          type: string
+          format: date
+        delayed:
+          type: string
+          enum: [Yes, No]
+        delay_days:
+          type: integer
+          description: 延遲天數 = max(預計完成日 − 交期, 0)
